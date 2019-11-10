@@ -17,8 +17,8 @@ class Author extends Model {
   }
 
   static associate(models) {
-    this.hasMany(models.Post, { foreignKey: 'author_id', as: 'posts' });
-    this.hasMany(models.Comments, { foreignKey: 'author_id', as: 'comments' });
+    // this.hasMany(models.Post, { foreignKey: 'author_id', as: 'posts' });
+    // this.hasMany(models.Comments, { foreignKey: 'author_id', as: 'comments' });
   }
 }
 module.exports = Author;
