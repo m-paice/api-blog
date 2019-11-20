@@ -7,8 +7,8 @@ class Author extends Model {
         name: DataTypes.STRING,
         username: DataTypes.STRING,
         password: DataTypes.STRING,
-        age: DataTypes.INTEGER,
-
+        email: DataTypes.STRING,
+        age: DataTypes.DATE,
       },
       {
         sequelize,

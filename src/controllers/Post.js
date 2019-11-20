@@ -1,12 +1,12 @@
 /* eslint-disable camelcase */
-const { Post, Author } = require('../models');
+const { Post, Author, Comments } = require('../models');
 
 module.exports = {
   /**
-         * Nome do métodos
-         * @param {Object} req
-         * @param {Object} res
-         */
+   * Nome do métodos
+   * @param {Object} req
+   * @param {Object} res
+   */
   async index(req, res) {
     try {
       const posts = await Post.findAll({ include: 'author' });
@@ -27,19 +27,73 @@ module.exports = {
       });
     }
   },
+  async showPostsComments(req, res) {
+    const id = req.params.id_author;
+
+    try {
+      const isAuthor = await Author.findByPk(id);
+      if (!isAuthor) {
+        return res.status(500).json({
+          data: 'author not found',
+          request: {
+            type: 'GET',
+            url: 'http://localhost:5959/posts/comments',
+          },
+        });
+      }
+      const data = await Post.findOne({
+        include: [
+          'author',
+          {
+            model: Author,
+            as: 'author',
+          },
+          { where: { id } },
+        ],
+      });
+      return res.status(200).json({
+        data,
+        request: {
+          type: 'GET',
+          url: 'http://localhost:5959/posts/comments',
+        },
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: error.message,
+        request: {
+          error: error.message,
+          type: 'GET',
+          url: 'http://localhost:5959/posts/comments',
+        },
+      });
+    }
+  },
+
+  async showRecentsPosts(req, res) {
+    const response = await Post.findAll({
+      limit: 2,
+      order: [['createdAt', 'DESC']],
+      include: 'author',
+    });
+    return res.json({
+      data: response,
+    });
+  },
   /**
-     * Nome do métodos
-     * @param {Object} req
-     * @param {Object} res
-     */
+   * Nome do métodos
+   * @param {Object} req
+   * @param {Object} res
+   */
   async store(req, res) {
-    const author_id = req.user;
-    const { title, body } = req.body;
+    // const author_id = req.user;
+    const { author_id, title, body } = req.body;
     try {
       const isAuthor = await Author.findByPk(author_id); // verificar se existe autor
       if (!isAuthor) {
-        return res.status(400).json({ error: 'Author not found!' });
+        return res.status(500).json({ error: 'Author not found!' });
       }
+
       const post = await Post.create({
         author_id,
         title,
@@ -63,10 +117,10 @@ module.exports = {
     }
   },
   /**
-     * Nome do métodos
-     * @param {Object} req
-     * @param {Object} res
-     */
+   * Nome do métodos
+   * @param {Object} req
+   * @param {Object} res
+   */
   async update(req, res) {
     const { id_post } = req.params;
     try {
@@ -89,10 +143,10 @@ module.exports = {
     }
   },
   /**
-     * Nome do métodos
-     * @param {Object} req
-     * @param {Object} res
-     */
+   * Nome do métodos
+   * @param {Object} req
+   * @param {Object} res
+   */
   async destroy(req, res) {
     const { id_post } = req.params;
     try {

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const jwt = require('jsonwebtoken');
 const { Author } = require('../models');
 
@@ -36,25 +37,15 @@ module.exports = {
    */
   async store(req, res) {
     const {
-      name, username, password, age,
+      name, username, password, age, email,
     } = req.body;
     try {
       // AUTENTICAÇÃO
       // if author exists
-      const isAuthor = await Author.findAll({ where: { username, password } });
+      const isAuthor = await Author.findOne({ where: { username, password } });
       if (isAuthor) {
         return res.json({
           error: 'Author already exists!',
-          request: {
-            type: 'POST',
-            url,
-          },
-        });
-      }
-
-      if ((username.lenght < 2) || (username === ' ') || (username !== username.typeof(Number)) || (username !== username.typeof(String))) {
-        return res.json({
-          error: 'Username invalid!',
           request: {
             type: 'POST',
             url,
@@ -66,6 +57,7 @@ module.exports = {
         username,
         password,
         age,
+        email,
       });
       return res.json({
         data: author,
@@ -103,7 +95,6 @@ module.exports = {
           },
         });
       }
-
       const token = jwt.sign({ author }, process.env.CHAVEJWT, {
         expiresIn: '1h',
       });
@@ -144,13 +135,13 @@ module.exports = {
           },
         });
       }
-      const [author] = await Author.update(
+      await Author.update(
         { ...req.body },
         { where: { id: id_author }, returning: true },
       );
 
       return res.status(200).json({
-        data: author[0],
+        data: isAuthor,
         request: {
           type: 'PUT/:id',
           url: `${url}/:id`,
