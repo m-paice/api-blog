@@ -27,6 +27,34 @@ module.exports = {
       });
     }
   },
+  /**
+   * Listar um post
+   * @param {Object} req
+   * @param {Object} res
+   */
+  async show(req, res) {
+    const { post_id } = req.params;
+
+    try {
+      const response = await Post.findByPk(post_id, { include: ['author'] });
+
+      if (!response) {
+        return res.status(500).json({
+          data: `Não foi possível encontrar o post do ID: ${post_id}`,
+        });
+      }
+
+      return res.json({
+        data: response,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        data: `Não foi possível listar o post do ID: ${post_id}`,
+        message: error,
+      });
+    }
+  },
+  // TODO: falta o comentario da funcao
   async showPostsComments(req, res) {
     const id = req.params.id_author;
 
@@ -69,7 +97,7 @@ module.exports = {
       });
     }
   },
-
+  // TODO: falta o comentario da funcao
   async showRecentsPosts(req, res) {
     const response = await Post.findAll({
       limit: 2,

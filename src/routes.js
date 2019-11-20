@@ -14,6 +14,7 @@ routes.delete('/authors/:id_author', Author.destroy); // Deleta um Autor
 // POSTS
 routes.get('/posts/recents', Post.showRecentsPosts);
 routes.get('/posts', Post.index); // Mostra todos os Posts
+routes.get('/posts/:post_id', Post.show); // Mostra todos os Posts
 routes.post('/posts', Post.store); // Cadastra um novo Post
 routes.put('/posts/:id_post', Post.update); // atualiza um Post
 routes.delete('/posts/:id_post', Post.destroy); // Deleta um Post
