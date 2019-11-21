@@ -104,6 +104,7 @@ module.exports = {
       order: [['createdAt', 'DESC']],
       include: 'author',
     });
+    console.log(`este é a resposta  ${response}`);
     return res.json({
       data: response,
     });

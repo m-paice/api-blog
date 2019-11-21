@@ -140,8 +140,9 @@ module.exports = {
         { where: { id: id_author }, returning: true },
       );
 
+      // console.log(isAuthor.dataValues);
       return res.status(200).json({
-        data: isAuthor,
+        data: isAuthor.dataValues,
         request: {
           type: 'PUT/:id',
           url: `${url}/:id`,
